@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.DynamicSQL">
+<!--第一个-->
+    <resultMap id="OrderList" type="pojo.EasybuyOrder">
+        <id property="id" column="id"/>
+        <result property="loginName" column="loginName"></result>
+        <result column="createTime" property="createTime"/>
+        <result column="cost" property="cost"/>
+        <result column="seriaNumber" property="seriaNumber"/>
+        <collection property="detail" ofType="pojo.OrderDetail" resultMap="DetailList">
+        </collection>
+    </resultMap>
+    <resultMap id="DetailList" type="pojo.OrderDetail">
+        <id property="id" column="b_id"/>
+        <result property="orderId" column="orderId"/>
+        <result property="productId" column="productId"/>
+        <result property="cost" column="cost"/>
+    </resultMap>
+    <select id="queryOrder" resultMap="OrderList">
+        select a.*,b.id as b_id ,b.orderid,b.describle
+        from easybuyorder a,orderdesc b
+        where a.id = b.orderid
+        <if test="loginName != null and loginName !=''">
+            and a.loginName like concat('%',#{loginName},'%')
+        </if>
+        <if test="serialNumber != null and serialNumber!= ''">
+            and a.serialNumber =#{serialNumber}
+        </if>
+    </select>
+
+
+<!--第二个-->
+    <resultMap id="OrderList2" type="pojo.EasybuyOrder">
+        <id property="id" column="id"/>
+        <result property="loginName" column="loginName"/>
+        <result property="createTime" column="createTime"/>
+        <result property="cost" column="cost"/>
+        <result property="serialNumber" column="serialNumber"/>
+    </resultMap>
+    <select id="queryOrder2" resultMap="OrderList2">
+        select * from  easybuyorder
+        <where>
+            <if test="loginName != null and loginName !=''">
+                and loginname like concat('%',#{loginName},'%')
+            </if>
+            <if test="serialNumber != null and serialNumber!= ''">
+                and serialNumber =#{serialNumber}
+            </if>
+        </where>
+    </select>
+
+<!--第三个-->
+    <update id="updateOrder" parameterType="pojo.EasybuyOrder">
+        update easybuyorder
+        <set>
+            <if test="loginName !=null and loginName != ''">
+                loginName=#{loginName}
+            </if>
+            <if test="createTime !=null">createTime=#{createTime},</if>
+            <if test="cost>0">cost=#{cost},</if>
+            <if test="serialNumber !=null and serialNumber != ''">serialNumber=#{serialNumber},</if>
+        </set>
+        where id=#{id}
+    </update>
+<!--第四个-->
+<!--    <select id="queryOrder3" resultMap="OrderList2">-->
+<!--        select * from easybuyorder-->
+<!--        <trim prefix="where" prefixOverrides="and | or">-->
+<!--            <if test="loginName !=null and loginName!= ''">-->
+<!--                and  loginName like cancat('%',#{loginName},'%')-->
+<!--            </if>-->
+<!--            <if test="serialNumber !=null and serialNumber !=''">-->
+<!--                and serialNumber=#{serialNumber}-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--        limit=#{from},#{pageSize}-->
+<!--    </select>-->
+
+<!--    <update id="updateOrder1" parameterType="pojo.EasybuyOrder">-->
+<!--        update easybuyorder-->
+<!--        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">-->
+<!--            <if test="loginName !=null and loginName != ''">-->
+<!--                loginName=#{loginName}-->
+<!--            </if> -->
+<!--             <if test="createTime !=null">createTime=#{createTime},</if>-->
+<!--             <if test="cost>0">cost=#{cost},</if>-->
+<!--             <if test="serialNumber !=null and serialNumber !=''">serialNumber=#{serialNumber},</if>-->
+<!--        </trim>-->
+<!--    </update>-->
+<!-- 第六种 相当于Switch当中的case otherwise相当于default choose当中有一个条件满足就直接跳出-->
+    <select id="queryOrder4" resultMap="OrderList2">
+        select * from easybuyorder
+        <where>
+            <choose>
+                <when test="loginName !=null and loginName != ''">
+                    and loginName like concat('%',#{loginName},'%')
+                </when>
+                <when test="serialNumber !=null and serialNumber !=''">
+                    and serialNumber=#{serialNumber}
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+<!-- 7-->
+    <select id="queryOrder6" resultMap="OrderList2">
+        select *from easybuyorder where loginName in
+        <foreach collection="list" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
+<!--    8-->
+    <select id="queryOrder7" resultMap="OrderList2">
+        select * from easybuyorder where createTime >=#{ctime} and
+        loginName in
+        <foreach collection="list" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
+<!--    9-->
+    <insert id="addRecordBatch" parameterType="java.util.List">
+        insert into newsuser (name,password) values
+        <foreach collection="list" item="item" separator="," >
+            (#{item.name},#{id.password})
+        </foreach>
+    </insert>
+<!--    10-->
+    <insert id="addRecordBatch1" parameterType="java.util.List">
+        <selectKey keyProperty="fetchDate" order="BEFORE"
+                   resultType="java.lang.String">
+            select current_date()
+        </selectKey>
+        insert into batis (b_name,b_date,b_desc) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name},#{fetchDate},#{item.desc})
+        </foreach>
+    </insert>
+
+</mapper>

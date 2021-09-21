@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.BatisMapper">
+    <insert id="addBatis" parameterType="pojo.Batis">
+        insert into batis(b_name,b_date,b_desc)values(#{name},#{date},#{desc})
+    </insert>
+    <insert id="addBatis1" parameterType="pojo.Batis" useGeneratedKeys="true" keyProperty="id">
+        insert  into batis(b_name,b_date,b_desc)values(#{name},#{date},#{desc})
+    </insert>
+    <update id="modifyBatis" parameterType="pojo.Batis">
+        update batis set b_name=#{name },b_date=#{date},b_desc=#{desc }
+        where b_id=#{id,jdbcType=INTEGER}
+    </update>
+    <!--    -->
+    <resultMap id="batisMap" type="pojo.Batis">
+        <result column="b_id" property="id"/>
+        <result column="b_name" property="name"/>
+        <result column="b_date" property="date"/>
+        <result column="b_desc" property="desc"/>
+    </resultMap>
+    <select id="getBatis" resultMap="batisMap" parameterType="Map">
+        select * from batis where b_id=#{id}
+    </select>
+<!--  驼峰  -->
+    <resultMap id="batisesMap" type="pojo.Batis" autoMapping="true"/>
+    <select id="getBatises" resultMap="batisesMap">
+        select * from batis
+    </select>
+</mapper>

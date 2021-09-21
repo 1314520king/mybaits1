@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.OrderMapper">
+
+    <resultMap id="OrderList" type="pojo.EasybuyOrder">
+        <id property="id" column="id"/>
+        <result property="loginName" column="loginname"/>
+        <result column="createtime" property="createTime"/>
+        <result column="cost" property="cost"/>
+        <result column="serialnumber" property="seriaNumber"/>
+        <collection property="detail" ofType="pojo.OrderDetail" resultMap="DetailList">
+        </collection>
+    </resultMap>
+
+    <resultMap id="DetailList" type="pojo.OrderDetail">
+        <id property="id" column="b_id"/>
+        <result property="orderId" column="orderId"/>
+        <result property="productId" column="productId"/>
+        <result property="cost" column="b_cost"/>
+    </resultMap>
+
+    <select id="queryAll" resultMap="OrderList">
+    select a.*, b.id b_id, b.orderId, b.productId, b.cost b_cost
+    from easybuyorder a,
+    orderdetail b
+    where a.id =b.orderid
+    </select>
+
+<!--    <select id="queryAll" resultMap="OrderList1">-->
+<!--         select a.*, b.id b_id, b.orderId, b.productId, b.cost b_cost-->
+<!--    from easybuyorder a,-->
+<!--    orderdetail b-->
+<!--    where a.id =b.orderid-->
+<!--    </select>-->
+
+
+<!--<select id="queryAll2" resultMap="OrderList">-->
+<!--    select a.*,b.id b_id,b.orderid,b.describle-->
+<!--    from easybuyorder a,orderdesc b-->
+<!--    where a.id=b.order-->
+<!--</select>-->
+<!--    <resultMap id="OrderList2" type="pojo.EasybuyOrder">-->
+<!--        <id property="id" column="id"/>-->
+<!--        <result property="loginName" column="loginName"/>-->
+<!--        <result property="createTime" column="createTime"/>-->
+<!--        <result property="cost" column="cost"/>-->
+<!--        <result property="serialNumber" column="serialNumber"/>-->
+<!--        <association property="orderDesc" javaType="pojo.OrderDesc">-->
+<!--             <id property="id" column="b_id"/>-->
+<!--            <result property="orderId" column="orderId"/>-->
+<!--            <result property="desc" column="describle"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.OrderMapper">
+    <resultMap id="OrderList4" type="java.util.Map">
+        <result property="loginName" column="loginname"/>
+        <result property="cost" column="cost"/>
+        <result property="productId" column="productid"/>
+    </resultMap>
+    <select id="queryAll4" resultMap="OrderList4">
+        select a.loginName,a.cost,b.productid
+        from easybuyorder a, orderdetail b
+        where a.id=b.orderid
+    </select>
+</mapper>

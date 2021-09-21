@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.Lazy">
+
+    <resultMap id="TeacherResult" type="pojo.Teacher">
+        <id property="id" column="id"/>
+        <result property="tname" column="tname"/>
+        <result property="subject" column="subject"/>
+        <collection property="slist" ofType="pojo.Student" select="queryStudent" column="tid">
+        </collection>
+    </resultMap>
+    <select id="queryStudent" resultType="pojo.Student" parameterType="int">
+        select student.* from student,stot
+        where stot.sid=student.sid and  stot.tid=#{value}
+    </select>
+    <select id="queryTeacher" resultMap="TeacherResult" parameterType="int">
+        select * from teacher where tid=#{value};
+    </select>
+</mapper>

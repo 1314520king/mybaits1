@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserMapper1">
+<!-- 二级缓存配置-->
+    <cache eviction="FIFO" flushInterval="600000" size="512" readOnly="false"/>
+    <insert id="addUser" parameterType="pojo.NewsUser">
+        insert into newsuser(name,password)values(#{name},#{password})
+    </insert>
+    <update id="modifyUser" parameterType="pojo.NewsUser">
+        update newsuser set name=#{name},password=#{password}
+        where id=#{id}
+    </update>
+    <delete id="deleteUser" parameterType="int">
+        delete from newsuser where id=#{id}
+    </delete>
+    <select id="totalUser" resultType="int">
+        select count(*) as count from newsuser
+    </select>
+    <select id="getUser" parameterType="int" resultType="pojo.NewsUser">
+        select * from newsuser where id=#{id};
+    </select>
+    <select id="getAllUser" resultType="pojo.NewsUser">
+       select * from newsuser
+    </select>
+</mapper>
